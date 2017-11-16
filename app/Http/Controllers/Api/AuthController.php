@@ -18,7 +18,6 @@ class AuthController extends ApiController
   /**
    * Create a new AuthController instance.
    *
-   * @return void
    */
   public function __construct()
   {
@@ -41,7 +40,7 @@ class AuthController extends ApiController
       return $this->respondWithToken($token);
     }
 
-    return response()->json(['error' => 'Unauthorized'], 401);
+    return $this->respondMessage(401, __('auth.failed'));
   }
 
   /**

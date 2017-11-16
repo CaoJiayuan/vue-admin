@@ -40,8 +40,8 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="" class="user-image" alt="User Image">
-                            <span class="hidden-xs">Alexander Pierce</span>
+                            <img :src="user.avatar" class="user-image" alt="User Image">
+                            <span class="hidden-xs">{{ user.name }}</span>
                         </a>
                     </li>
                 </ul>
@@ -51,13 +51,19 @@
 
 </template>
 <script>
+    import {mapGetters} from 'vuex';
+
     export default {
         mounted   : function () {
 
         },
         data() {
-            return {
-            }
+            return {}
+        },
+        computed  : {
+            ...mapGetters({
+                user: 'getUser'
+            })
         },
         props     : {},
         components: {},
