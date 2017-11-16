@@ -53,9 +53,11 @@
 <script>
     export default {
         mounted   : function () {
+
         },
         data() {
-            return {}
+            return {
+            }
         },
         props     : {},
         components: {},

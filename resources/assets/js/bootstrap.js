@@ -1,4 +1,4 @@
-
+import {toastrNotification} from './app/utils';
 window._ = require('lodash');
 
 /**
@@ -22,6 +22,20 @@ require('es6-promise').polyfill();
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+window.axios.interceptors.request.use(config => {
+
+    let token = localStorage.getItem('jwt_token');
+    if (token) {
+        config.headers.common['Authorization'] = 'Bearer ' + token;
+    }
+    return config;
+}, err => {
+    return Promise.reject(err);
+});
+window.axios.interceptors.response.use(undefined, error => {
+    toastrNotification('error', error.response.data.message);
+});
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that

@@ -4,6 +4,7 @@ import Header from './components/layouts/Header.vue';
 import Footer from './components/layouts/Footer.vue';
 import Aside from './components/layouts/Aside.vue';
 import Content from './components/layouts/Content.vue';
+import store from './store';
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -30,5 +31,6 @@ const router = new VueRouter({
 
 const app = new Vue({
     el: '#app',
+    store,
     router
 });

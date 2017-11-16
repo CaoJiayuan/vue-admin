@@ -53,8 +53,8 @@
         components: {},
         methods   : {
             login(){
-                axios.post('/login', this.user).then(response => {
-                    window.localStorage.setItem('jwt_token', response.data.token);
+                axios.post('/api/login', this.user).then(response => {
+                    window.localStorage.setItem('jwt_token', response.data.access_token);
                     window.location.href = '/';
                 }).catch(error => {
                     window.console.log(error)
