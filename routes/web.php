@@ -13,6 +13,7 @@
 
 
 Route::get('login', 'Auth\LoginController@showLoginForm');
+Route::post('login', 'Auth\LoginController@login');
 
 Route::get('/', function () {
     return view('index');
