@@ -1,4 +1,5 @@
 import {toastrNotification} from './app/utils';
+
 window._ = require('lodash');
 
 /**
@@ -16,18 +17,29 @@ require('es6-promise').polyfill();
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
+ * CSRF csrf as a header based on the value of the "XSRF" csrf cookie.
  */
 
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+window.axios.defaults.withCredentials = true;
+
+
+/**
+ * Next we will register the CSRF Token as a common header with Axios so that
+ * all outgoing HTTP requests automatically have it attached. This is just
+ * a simple convenience so we don't have to attach every csrf manually.
+ */
+
+let csrf = document.head.querySelector('meta[name="csrf-token"]');
+
 window.axios.interceptors.request.use(config => {
 
-    let token = localStorage.getItem('jwt_token');
-    if (token) {
-        config.headers.common['Authorization'] = 'Bearer ' + token;
+    let jwt = localStorage.getItem('jwt_token');
+    if (jwt) {
+        config.headers.common['Authorization'] = 'Bearer ' + jwt;
     }
     return config;
 }, err => {
@@ -37,18 +49,11 @@ window.axios.interceptors.response.use(undefined, error => {
     toastrNotification('error', error.response.data.message);
 });
 
-/**
- * Next we will register the CSRF Token as a common header with Axios so that
- * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
- */
 
-let token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+if (csrf) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
 } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF csrf not found: https://laravel.com/docs/csrf#csrf-x-csrf-csrf');
 }
 
 /**

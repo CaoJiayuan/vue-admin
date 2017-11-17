@@ -16,4 +16,4 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 
 Route::get('/', function () {
     return view('index');
-});
+})->middleware('auth');

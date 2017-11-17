@@ -11,7 +11,9 @@ namespace App\Http\Controllers\Api;
 
 use Auth;
 use CaoJiayuan\LaravelApi\Routing\ApiController;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTGuard;
 
 class AuthController extends ApiController
 {
@@ -34,23 +36,42 @@ class AuthController extends ApiController
    */
   public function login(Request $request)
   {
-    $credentials = $request->only('email', 'password');
 
-    if ($token = $this->guard()->attempt($credentials)) {
+    if ($token = $this->attemptLogin($request)) {
       return $this->respondWithToken($token);
     }
 
     return $this->respondMessage(401, __('auth.failed'));
   }
 
+  public function attemptLogin(Request $request)
+  {
+    $credentials = $request->only('email', 'password');
+
+    /** @var JWTGuard $jwt */
+    $jwt = $this->guard();
+
+    if ($token = $jwt->attempt($credentials)) {
+//      $session = $this->guard('web');
+//      /** @var SessionGuard $session */
+//      $user = $jwt->getLastAttempted();
+//      $session->login($user);
+//      $request->session()->regenerate();
+      return $token;
+    }
+
+    return false;
+  }
+
   /**
    * Get the guard to be used during authentication.
    *
+   * @param string $name
    * @return \Illuminate\Contracts\Auth\Guard
    */
-  public function guard()
+  public function guard($name = 'jwt')
   {
-    return Auth::guard('jwt');
+    return Auth::guard($name);
   }
 
   /**
