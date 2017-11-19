@@ -13,10 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['namespace' => 'Api'], function () {
+Route::group(['namespace' => 'Api', 'middleware' => 'web'], function () {
   Route::post('login', 'AuthController@login');
   Route::post('logout', 'AuthController@logout');
   Route::post('refresh', 'AuthController@refresh');
   Route::get('user', 'AuthController@user');
   Route::get('/navigation', 'HomeController@navigation');
+  Route::get('test', function (Request $request) {
+    return $request->session()->getId();
+  });
 });
+

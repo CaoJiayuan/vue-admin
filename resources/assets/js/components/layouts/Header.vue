@@ -1,14 +1,14 @@
 <template>
-    <header class="main-header">
+    <header class="main-header ">
         <!-- Logo -->
-        <a href="#" class="logo">
+        <a href="#" class="logo shadow-able"  style="position: fixed;">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>A</b>LT</span>
             <!-- logo for regular state and mobile devices -->
             <span class="logo-lg"><b>Admin</b>LTE</span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top">
+        <nav class="navbar navbar-fixed-top shadow-able">
             <!-- Sidebar toggle button-->
             <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                 <span class="sr-only">Toggle navigation</span>
@@ -40,9 +40,18 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img :src="user.avatar" class="user-image" alt="User Image">
+                            <img :src="user.avatar" class="user-image" :alt="user.name">
                             <span class="hidden-xs">{{ user.name }}</span>
                         </a>
+                        <ul class="dropdown-menu shadow-able">
+                            <li class="text-center">
+                                <a href="#">Profile</a>
+                            </li>
+                            <li class="text-center">
+                                <a href="#" @click="signOut">Sign out</a>
+                            </li>
+
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -67,7 +76,13 @@
         },
         props     : {},
         components: {},
-        methods   : {},
+        methods   : {
+            signOut() {
+                axios.post('/api/logout').then(response => {
+                    window.location.href = '/login';
+                })
+            }
+        },
         created   : function () {
 
         }

@@ -1,5 +1,5 @@
 <template>
-    <div class="login-box-body">
+    <div class="login-box-body  shadow-able">
         <p class="login-box-msg">Sign in to start your session</p>
 
         <form>
@@ -12,15 +12,8 @@
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="row">
-                <div class="col-xs-8">
-                    <div class="checkbox icheck">
-                        <label>
-                            <input type="checkbox" v-model="user.remember"> Remember Me
-                        </label>
-                    </div>
-                </div>
                 <!-- /.col -->
-                <div class="col-xs-4">
+                <div class="col-xs-6 col-xs-offset-3">
                     <button type="button" class="btn btn-primary btn-block btn-flat" @click="login">Sign In</button>
                 </div>
                 <!-- /.col -->
@@ -30,6 +23,7 @@
     </div>
 </template>
 <script>
+    import {toastrNotification} from '../../app/utils';
     export default {
         mounted   : function () {
            this.$nextTick(() => {

@@ -18,7 +18,7 @@
 
 </head>
 <body class="hold-transition login-page">
-<div class="login-box" id="app">
+<div class="center-block" style="width: 420px;margin-top: 50px" id="app">
     <div class="login-logo">
         <a href="/"><b>Admin</b>LTE</a>
     </div>

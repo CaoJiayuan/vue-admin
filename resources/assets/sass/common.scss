@@ -5,3 +5,10 @@
 // Bootstrap
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 @import "~admin-lte/dist/css/AdminLTE.min";
+
+
+.shadow-able{
+  -webkit-box-shadow: 0 1px 3px #9f979c;
+  -moz-box-shadow: 0 1px 3px #9f979c;
+  box-shadow: 0 1px 3px #9f979c;
+}

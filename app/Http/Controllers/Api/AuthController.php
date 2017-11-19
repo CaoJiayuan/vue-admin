@@ -36,12 +36,21 @@ class AuthController extends ApiController
    */
   public function login(Request $request)
   {
+    $this->validateLogin($request);
 
     if ($token = $this->attemptLogin($request)) {
       return $this->respondWithToken($token);
     }
 
     return $this->respondMessage(401, __('auth.failed'));
+  }
+
+  public function validateLogin(Request $request)
+  {
+    $this->validate($request, [
+      'email'    => 'required|email',
+      'password' => 'required'
+    ]);
   }
 
   public function attemptLogin(Request $request)
@@ -52,11 +61,12 @@ class AuthController extends ApiController
     $jwt = $this->guard();
 
     if ($token = $jwt->attempt($credentials)) {
-//      $session = $this->guard('web');
-//      /** @var SessionGuard $session */
-//      $user = $jwt->getLastAttempted();
-//      $session->login($user);
-//      $request->session()->regenerate();
+      $session = $this->guard('web');
+      /** @var SessionGuard $session */
+      $user = $jwt->getLastAttempted();
+      $session->login($user);
+      $request->session()->regenerate();
+
       return $token;
     }
 
@@ -108,6 +118,7 @@ class AuthController extends ApiController
   public function logout()
   {
     $this->guard()->logout();
+    $this->guard('web')->logout();
 
     return response()->json(['message' => 'Successfully logged out']);
   }
