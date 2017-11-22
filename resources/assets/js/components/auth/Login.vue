@@ -27,13 +27,6 @@
     import UserApi from '../../app/apis/UserApi';
     export default {
         mounted   : function () {
-           this.$nextTick(() => {
-               $('.icheck').iCheck({
-                   checkboxClass: 'icheckbox_square-blue',
-                   radioClass: 'iradio_square-blue',
-                   increaseArea: '20%' // optional
-               });
-           })
         },
         data() {
             return {
