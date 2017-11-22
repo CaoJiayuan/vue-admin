@@ -24,6 +24,7 @@
 </template>
 <script>
     import {toastrNotification} from '../../app/utils';
+    import UserApi from '../../app/apis/UserApi';
     export default {
         mounted   : function () {
            this.$nextTick(() => {
@@ -47,12 +48,10 @@
         components: {},
         methods   : {
             login(){
-                axios.post('/api/login', this.user).then(response => {
-                    window.localStorage.setItem('jwt_token', response.data.access_token);
+                UserApi.login(this.user).then(data => {
+                    window.localStorage.setItem('jwt_token', data.access_token);
                     window.location.href = '/';
-                }).catch(error => {
-                    window.console.log(error)
-                })
+                });
             }
         },
         created   : function () {

@@ -61,6 +61,7 @@
 </template>
 <script>
     import {mapGetters} from 'vuex';
+    import UserApi from '../../app/apis/UserApi';
 
     export default {
         mounted   : function () {
@@ -78,9 +79,9 @@
         components: {},
         methods   : {
             signOut() {
-                axios.post('/api/logout').then(response => {
+                UserApi.logout().then(data => {
                     window.location.href = '/login';
-                })
+                });
             }
         },
         created   : function () {
