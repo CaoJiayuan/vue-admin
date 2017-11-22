@@ -8,7 +8,7 @@
 
 
 .shadow-able{
-  -webkit-box-shadow: 0 1px 3px #9f979c;
-  -moz-box-shadow: 0 1px 3px #9f979c;
-  box-shadow: 0 1px 3px #9f979c;
+  -webkit-box-shadow: 0 1px 3px $box-shadow-color;
+  -moz-box-shadow: 0 1px 3px $box-shadow-color;
+  box-shadow: 0 1px 3px $box-shadow-color;
 }
