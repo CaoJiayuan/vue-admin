@@ -44,11 +44,6 @@ class LoginController extends Controller
     return view('login');
   }
 
-  protected function sendLoginResponse(Request $request)
-  {
-    return $this->authenticated($request, $this->guard()->user());
-  }
-
   /**
    * The user has been authenticated.
    *
