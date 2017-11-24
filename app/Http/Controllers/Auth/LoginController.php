@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWTGuard;
 
 class LoginController extends Controller
 {
@@ -52,25 +52,47 @@ class LoginController extends Controller
   /**
    * The user has been authenticated.
    *
-   * @param  Request  $request
-   * @param  mixed  $user
+   * @param  Request $request
+   * @param  mixed $user
    * @return mixed
    */
   protected function authenticated(Request $request, $user)
   {
-    $user->token = $this->getJWTToken($request, $user);
+    $data = [
+      'access_token' => $this->getJWTToken($request, $user),
+      'expires_in'   => $this->getTTl(),
+      'type'         => 'bearer',
+      'user'         => $user
+    ];
 
-    return $user;
+    return response()->json($data);
   }
 
   protected function getJWTToken(Request $request, $user)
   {
-    return JWTAuth::fromUser($user, $this->getCustomClaims($request, $user));
+    /** @var JWTGuard $guard */
+    $guard = \Auth::guard('jwt');
+    return $guard->login($user);
   }
 
-  protected function getCustomClaims(Request $request, $user)
+  public function getTTl()
   {
-    return [];
+    $guard = \Auth::guard('jwt');
+
+    return $guard->factory()->getTTL() * 60;
+  }
+
+  public function logout(Request $request)
+  {
+    $this->guard()->logout();
+    $request->session()->invalidate();
+    $jwtGuard = \Auth::guard('jwt');
+    try {
+      $jwtGuard->logout();
+    } catch (\Exception $exception) {
+    }
+
+    return response()->json(['message' => 'Success']);
   }
 
 }

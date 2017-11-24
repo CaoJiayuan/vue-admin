@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api;
 
 use Auth;
 use CaoJiayuan\LaravelApi\Routing\ApiController;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTGuard;
@@ -18,109 +19,18 @@ use Tymon\JWTAuth\JWTGuard;
 class AuthController extends ApiController
 {
   /**
-   * Create a new AuthController instance.
-   *
-   */
-  public function __construct()
-  {
-    $this->middleware('auth:jwt', ['except' => ['login']]);
-    parent::__construct();
-  }
-
-  /**
-   * Get a JWT token via given credentials.
-   *
-   * @param  Request $request
-   *
-   * @return \Illuminate\Http\JsonResponse
-   */
-  public function login(Request $request)
-  {
-    $this->validateLogin($request);
-
-    if ($token = $this->attemptLogin($request)) {
-      return $this->respondWithToken($token);
-    }
-
-    return $this->respondMessage(401, __('auth.failed'));
-  }
-
-  public function validateLogin(Request $request)
-  {
-    $this->validate($request, [
-      'email'    => 'required|email',
-      'password' => 'required'
-    ]);
-  }
-
-  public function attemptLogin(Request $request)
-  {
-    $credentials = $request->only('email', 'password');
-
-    /** @var JWTGuard $jwt */
-    $jwt = $this->guard();
-
-    if ($token = $jwt->attempt($credentials)) {
-      $session = $this->guard('web');
-      /** @var SessionGuard $session */
-      $user = $jwt->getLastAttempted();
-      $session->login($user);
-      $request->session()->regenerate();
-
-      return $token;
-    }
-
-    return false;
-  }
-
-  /**
-   * Get the guard to be used during authentication.
-   *
-   * @param string $name
-   * @return \Illuminate\Contracts\Auth\Guard
-   */
-  public function guard($name = 'jwt')
-  {
-    return Auth::guard($name);
-  }
-
-  /**
-   * Get the token array structure.
-   *
-   * @param  string $token
-   *
-   * @return \Illuminate\Http\JsonResponse
-   */
-  protected function respondWithToken($token)
-  {
-    return response()->json([
-      'access_token' => $token,
-      'token_type'   => 'bearer',
-      'expires_in'   => $this->guard()->factory()->getTTL() * 60
-    ]);
-  }
-
-  /**
    * Get the authenticated User
    *
    * @return \Illuminate\Http\JsonResponse
+   * @throws AuthenticationException
    */
   public function user()
   {
-    return response()->json($this->guard()->user());
-  }
+    if ($user = Auth::user()){
+      return response()->json($user);
+    }
 
-  /**
-   * Log the user out (Invalidate the token)
-   *
-   * @return \Illuminate\Http\JsonResponse
-   */
-  public function logout()
-  {
-    $this->guard()->logout();
-    $this->guard('web')->logout();
-
-    return response()->json(['message' => 'Successfully logged out']);
+    throw new AuthenticationException('Unauthenticated.');
   }
 
   /**

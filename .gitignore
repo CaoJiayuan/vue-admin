@@ -12,4 +12,3 @@ yarn-error.log
 .env
 /_ide_helper.php
 /package-lock.json
-/composer.lock

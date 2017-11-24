@@ -13,14 +13,17 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['namespace' => 'Api', 'middleware' => 'web'], function () {
-  Route::post('login', 'AuthController@login');
-  Route::post('logout', 'AuthController@logout');
-  Route::post('refresh', 'AuthController@refresh');
-  Route::get('user', 'AuthController@user');
-  Route::get('/navigation', 'HomeController@navigation');
-  Route::get('test', function (Request $request) {
-    return $request->session()->getId();
+Route::group(['middleware' => 'web'], function () {
+  Route::post('login', 'Auth\LoginController@login');
+  Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+  Route::group(['middleware' => 'auth:jwt,web', 'namespace' => 'Api'], function () {
+    Route::post('refresh', 'AuthController@refresh');
+    Route::get('user', 'AuthController@user');
+    Route::get('/navigation', 'HomeController@navigation');
+    Route::get('test', function (Request $request) {
+      return $request->session()->getId();
+    });
   });
 });
 

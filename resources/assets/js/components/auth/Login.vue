@@ -42,7 +42,6 @@
         methods   : {
             login(){
                 UserApi.login(this.user).then(data => {
-                    window.localStorage.setItem('jwt_token', data.access_token);
                     window.location.href = '/';
                 });
             }
