@@ -34,6 +34,13 @@ class AuthController extends ApiController
   }
 
   /**
+   * @return JWTGuard
+   */
+  public function guard()
+  {
+    return Auth::guard('jwt');
+  }
+  /**
    * Refresh a token.
    *
    * @return \Illuminate\Http\JsonResponse
