@@ -1,4 +1,11 @@
 import axios from 'axios';
+import {TOKEN_CACHE_NAME} from '../constant';
+function Token() {
+
+}
+Token.prototype.access_token = null;
+Token.prototype.expires_in = 0;
+Token.prototype.type = null;
 
 const UserApi = {
     getUser() {
@@ -6,21 +13,20 @@ const UserApi = {
     },
     login(credentials){
         return axios.post('/api/login', credentials).then(response =>{
-            let data = response.data;
-            window.localStorage.setItem('jwt_token', data.access_token);
-            this.readyToRefresh(data.expires_in);
-            return data;
+            this.afterLogin(response.data)
         })
     },
     logout(){
         return axios.post('/api/logout').then(response => response.data)
     },
+    afterLogin(token){
+        window.localStorage.setItem(TOKEN_CACHE_NAME, token.access_token);
+        token.expires_in > 0 && this.readyToRefresh(token.expires_in);
+        return token;
+    },
     refresh(){
         return axios.post('/api/refresh').then(response =>{
-            let data = response.data;
-            window.localStorage.setItem('jwt_token', data.access_token);
-            this.readyToRefresh(data.expires_in);
-            return data;
+            this.afterLogin(response.data)
         })
     },
     readyToRefresh(ttl){

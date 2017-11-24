@@ -1,5 +1,5 @@
 import {toastrNotification} from './app/utils';
-
+import {TOKEN_CACHE_NAME} from './app/constant';
 window._ = require('lodash');
 
 /**
@@ -37,7 +37,7 @@ let csrf = document.head.querySelector('meta[name="csrf-token"]');
 
 window.axios.interceptors.request.use(config => {
 
-    let jwt = localStorage.getItem('jwt_token');
+    let jwt = localStorage.getItem(TOKEN_CACHE_NAME);
     if (jwt) {
         config.headers.common['Authorization'] = 'Bearer ' + jwt;
     }
