@@ -24,6 +24,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('test', function (Request $request) {
       return $request->session()->getId();
     });
+    Route::get('/users', 'HomeController@users');
   });
 });
 

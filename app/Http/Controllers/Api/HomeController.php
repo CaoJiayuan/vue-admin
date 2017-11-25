@@ -9,7 +9,9 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\User;
 use CaoJiayuan\LaravelApi\Routing\ApiController;
+use Illuminate\Http\Request;
 
 class HomeController extends ApiController
 {
@@ -18,4 +20,8 @@ class HomeController extends ApiController
     return config('permissions');
   }
 
+  public function users(Request $request)
+  {
+    return User::paginate($request->get('per_page'));
+  }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Faker\Factory;
+use Generator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+      $this->app->bind(Generator::class, Factory::create('zh_CN'));
     }
 
     /**
