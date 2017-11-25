@@ -56,8 +56,7 @@ class LoginController extends Controller
     $data = [
       'access_token' => $this->getJWTToken($request, $user),
       'expires_in'   => $this->getTTl(),
-      'type'         => 'bearer',
-      'user'         => $user
+      'type'         => 'bearer'
     ];
 
     return response()->json($data);
@@ -72,6 +71,7 @@ class LoginController extends Controller
 
   public function getTTl()
   {
+    return 8;
     $guard = \Auth::guard('jwt');
 
     return $guard->factory()->getTTL() * 60;

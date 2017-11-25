@@ -1,5 +1,6 @@
 import {toastrNotification} from './app/utils';
-import {TOKEN_CACHE_NAME} from './app/constant';
+import {TOKEN_CACHE_NAME, LOGIN_PATH} from './app/constant';
+
 window._ = require('lodash');
 
 /**
@@ -12,7 +13,8 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap-sass');
-} catch (e) {}
+} catch (e) {
+}
 require('es6-promise').polyfill();
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -46,7 +48,11 @@ window.axios.interceptors.request.use(config => {
     return Promise.reject(err);
 });
 window.axios.interceptors.response.use(undefined, error => {
-    toastrNotification('error', error.response.data.message);
+    if (error.response.status === 401) {
+        window.location.href = LOGIN_PATH;
+    } else {
+        toastrNotification('error', error.response.data.message);
+    }
 });
 
 

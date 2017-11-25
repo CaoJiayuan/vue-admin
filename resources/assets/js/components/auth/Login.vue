@@ -24,6 +24,7 @@
 </template>
 <script>
     import {toastrNotification} from '../../app/utils';
+    import {HOME_PATH} from '../../app/constant';
     import UserApi from '../../app/apis/UserApi';
     export default {
         mounted   : function () {
@@ -41,8 +42,8 @@
         components: {},
         methods   : {
             login(){
-                UserApi.login(this.user).then(data => {
-                    window.location.href = '/';
+                UserApi.login(this.user).then(token => {
+                    window.location.href = HOME_PATH;
                 });
             }
         },

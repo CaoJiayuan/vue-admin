@@ -40,6 +40,17 @@ class AuthController extends ApiController
   {
     return Auth::guard('jwt');
   }
+
+  public function respondWithToken($token)
+  {
+    $data = [
+      'access_token' => $token,
+      'expires_in'   => 8,//$this->guard()->factory()->getTTL() * 60,
+      'type'         => 'bearer',
+    ];
+
+    return response()->json($data);
+  }
   /**
    * Refresh a token.
    *
