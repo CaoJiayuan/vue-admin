@@ -9,19 +9,27 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Repository\Repository;
 use App\User;
+use CaoJiayuan\LaravelApi\Pagination\PageHelper;
 use CaoJiayuan\LaravelApi\Routing\ApiController;
 use Illuminate\Http\Request;
 
 class HomeController extends ApiController
 {
+  use PageHelper;
+
   public function navigation()
   {
     return config('permissions');
   }
 
-  public function users(Request $request)
+  public function users(Request $request, Repository $repository)
   {
-    return User::paginate($request->get('per_page'));
+
+    return $repository->getSearchAbleData(User::class, ['name']);
+    $query = User::query();
+
+    return $this->applyPaginate($query, $request->get('per_page'));
   }
 }

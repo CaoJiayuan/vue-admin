@@ -12,6 +12,7 @@ import store from './store';
  */
 
 require('./bootstrap');
+require('./app/polyfill');
 require('admin-lte');
 
 window.Vue = require('vue');

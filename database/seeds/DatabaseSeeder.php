@@ -12,13 +12,14 @@ class DatabaseSeeder extends Seeder
   public function run()
   {
     $fa = \Faker\Factory::create();
+    DB::table('users')->truncate();
     \App\User::updateOrCreate([
       'email'    => '1@q.com',
     ], [
       'name'     => '张三',
-      'avatar'   => $fa->imageUrl(512, 512),
+      'avatar'   => $fa->imageUrl(640, 640),
       'password' => bcrypt(123456),
     ]);
-    factory(\App\User::class, 20)->create();
+    factory(\App\User::class, 100)->create();
   }
 }

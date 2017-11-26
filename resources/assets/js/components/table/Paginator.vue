@@ -2,11 +2,11 @@
     <div class="row">
         <div class="col-sm-7">
             <ul class="pagination pull-left" v-if="paginator.total > paginator.per_page">
-                <li v-if="paginator.prev_page_url"  class="click-able">
+                <li v-if="paginator.prev_page_url" class="click-able">
                     <a aria-label="Previous" @click="changePage(paginator.prev_page_url)"><span
                             aria-hidden="true">&laquo;</span></a>
                 </li>
-                <li v-for="page in pages" :class="{ 'active': page.page == paginator.current_page }"  class="click-able">
+                <li v-for="page in pages" :class="{ 'active': page.page == paginator.current_page }" class="click-able">
                     <a @click="changePage(page.url)" v-if="page.page != paginator.current_page"> {{ page.page}}</a>
                     <a v-else="page.page == paginator.current_page"> {{ page.page }}</a>
                 </li>
@@ -15,11 +15,14 @@
                             aria-hidden="true">&raquo;</span></a>
                 </li>
             </ul>
-            <button class="btn btn-primary pull-left table-info table-refresh" @click="refresh"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+            <button class="btn btn-primary pull-left table-info table-refresh" @click="refresh"><i class="fa fa-refresh"
+                                                                                                   aria-hidden="true"></i>
+            </button>
         </div>
         <div class="col-sm-5 table-info">
             <div class="col-sm-3 pull-right">
-                <multiselect :options="sizeOptions" v-model="perPage" @select="changeSize" placeholder="条/每页" selectLabel="" deselectLabel="" selectedLabel="已选" :allowEmpty="false"></multiselect>
+                <multiselect :options="sizeOptions" v-model="perPage" @select="changeSize" placeholder="条/每页"
+                             selectLabel="" deselectLabel="" selectedLabel="已选" :allowEmpty="false"></multiselect>
             </div>
             <p class="pull-right" role="status" aria-live="polite">
                 显示{{paginator.from}}到{{paginator.to}}条，共{{paginator.total}}条
@@ -32,10 +35,11 @@
     import Api from './api';
     import {setQuery} from "../../app/utils";
     import Multiselect from 'vue-multiselect';
+
     export default {
         data() {
             return {
-                paginator: {
+                paginator : {
                     current_page  : 1,
                     data          : [],
                     first_page_url: null,
@@ -49,31 +53,43 @@
                     to            : null,
                     total         : null,
                 },
-                perPage:15
+                perPage   : 15,
+                currentUrl: null
             }
         },
         props     : {
-            url: {
+            url        : {
                 type    : String,
                 required: true
             },
-            onDataLoad:{
-                type:Function,
-                default: data => {}
+            onDataLoad : {
+                type   : Function,
+                default: data => {
+                }
             },
-            sizeOptions:{
-                type:Array,
-                default: () => [10, 15, 20, 30, 50]
+            beforeLoad : {
+                type   : Function,
+                default: () => {
+                }
+            },
+            onRefresh  : {
+                type   : Function,
+                default: () => {
+                }
+            },
+            sizeOptions: {
+                type   : Array,
+                default: () => [10, 15, 30, 50]
             }
         },
-        computed:{
-            pages(){
+        computed  : {
+            pages() {
                 if (this.paginator.last_page < 2) {
                     return;
                 }
                 let pages, index, maxPage, start, distance;
                 distance = 4;
-                pages    = [];
+                pages = [];
                 pages.push({
                     url : this.getUrl(1),
                     page: 1
@@ -113,29 +129,43 @@
         },
         components: {Multiselect},
         methods   : {
-            changePage(url){
-                Api.getList(url).then(data => {
+            changePage(url) {
+                this.currentUrl = url;
+                this.beforeLoad();
+                return Api.getList(url).then(data => {
                     this.paginator = data;
-                    this.onDataLoad(data.data)
+                    this.perPage = data.per_page;
+                    this.onDataLoad(data.data);
+                    return data;
                 })
             },
-            getUrl(page){
-                return setQuery(this.url, {
+            getUrl(page) {
+                return setQuery(this.currentUrl, {
                     page: page
                 });
             },
-            changeSize(size){
-                let url = setQuery(this.url, {
-                    per_page:size
+            changeSize(size) {
+                let url = setQuery(this.currentUrl, {
+                    per_page: size
                 });
-                this.changePage(url)
+               return this.changePage(url)
             },
-            refresh(){
-                this.changePage(this.url)
+            sendData(data){
+                let url = setQuery(this.currentUrl, data);
+                return this.changePage(url);
+            },
+            refresh() {
+                let perPage = this.perPage ? this.perPage : 15;
+                let promise = this.changePage(setQuery(this.url, {
+                    per_page:perPage
+                }));
+                this.onRefresh();
+                return promise;
             }
         },
         mounted() {
-           this.changePage(this.url)
+            this.currentUrl = this.url;
+            this.changePage(this.url)
         },
         created() {
 
@@ -145,15 +175,24 @@
 </script>
 <style>
     @import "~vue-multiselect/dist/vue-multiselect.min.css";
-    .table-info{
+
+    .table-info {
         white-space: nowrap;
         margin: 22px 0;
     }
-    .table-info p{
+
+    .table-info p {
         line-height: 36px;
     }
-    .table-refresh{
+
+    .table-refresh {
         border-radius: 5px;
         margin-left: 10px;
+    }
+
+    .multiselect__content-wrapper{
+        -webkit-box-shadow: 0 1px 3px #c2c4bf;
+        -moz-box-shadow: 0 1px 3px #c2c4bf;
+        box-shadow: 0 1px 3px #c2c4bf;
     }
 </style>

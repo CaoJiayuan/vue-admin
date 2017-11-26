@@ -1,13 +1,16 @@
 import * as _ from 'lodash';
+import * as Chance from "chance";
 
 let toastr = require('toastr');
 let timer = null;
+
 export function throttle(callback, threshold) {
     clearTimeout(timer);
     timer = setTimeout(function () {
         (typeof callback === 'function') && callback();
     }, threshold)
 }
+
 export function toastrNotification(type, message, overloadOptions) {
     // type有4种，success、info、warning、error
     toastr.options = {
@@ -44,7 +47,7 @@ export function toastrNotification(type, message, overloadOptions) {
  */
 export function setQuery(url, query) {
     let obj = parseUrl(url);
-    let q   = obj.query;
+    let q = obj.query;
 
     for (let i in  query) {
         let item = query[i];
@@ -79,12 +82,23 @@ export function parseUrl(url) {
             query      : {}
         }
     }
-    let qs    = part[1].split('&');
+    let qs = part[1].split('&');
     let query = {};
     qs.forEach(function (item) {
         let p = item.split('=');
         if (p.length > 1) {
-            query[p[0]] = p[1];
+            let key = p[0];
+            let value = p[1];
+            if (key.indexOf('[]') > 0) {
+                let fixedKey = key.replace('[]', '');
+                if (query[fixedKey]) {
+                    query[fixedKey].push(value)
+                } else {
+                    query[fixedKey] = [value];
+                }
+            } else {
+                query[key] = value;
+            }
         }
     });
 
@@ -94,17 +108,31 @@ export function parseUrl(url) {
         query      : query
     }
 }
+
 /**
  *
  * @param {Object} query
  * @returns {string}
  */
 export function httpQueryString(query) {
-    let qs = '';
-    for (let i in query) {
-        qs += '&' + i + '=' + query[i];
-    }
-    return qs.length >= 1 ? qs.substr(1) : qs;
+    let qsArray = [];
+    _.forEach(query, function (v, k) {
+        if (_.isArray(v)) {
+            v.forEach(value => {
+                qsArray.push(k + '[]=' + value);
+            })
+        } else {
+            qsArray.push(k + '=' + v);
+        }
+    });
+
+    return qsArray.join('&');
+}
+
+export function randomString(length, pool) {
+    length = length || 16;
+    pool = pool || 'qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM';
+    return new Chance().string({length: length, pool: pool})
 }
 
 /**
