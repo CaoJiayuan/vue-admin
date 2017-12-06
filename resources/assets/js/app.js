@@ -5,6 +5,7 @@ import Footer from './components/layouts/Footer.vue';
 import Aside from './components/layouts/Aside.vue';
 import Content from './components/layouts/Content.vue';
 import store from './store';
+import interceptor from "./app/routeInterceptor";
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -24,6 +25,9 @@ window.Vue.component('AdminContent', Content);
 const router = new VueRouter({
     routes
 });
+
+router.beforeEach(interceptor);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

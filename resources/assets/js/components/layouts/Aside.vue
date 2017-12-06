@@ -24,18 +24,18 @@
             <!-- /.search form -->
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu" data-widget="tree">
-                <li class="header">MAIN NAVIGATION</li>
-
-                <li class="treeview" v-for="nav in navigation">
-                    <a href="#">
+                <li :class="hasNode(nav) ? 'treeview' : ''" v-for="nav in navigation">
+                    <router-link :to="{path:nav.path}">
                         <i :class="nav.icon"></i> <span>{{ nav.display_name }}</span>
                         <span class="pull-right-container" v-if="hasNode(nav)">
                           <i class="fa fa-angle-left pull-right"></i>
                         </span>
-                    </a>
+                    </router-link>
                     <ul class="treeview-menu" v-if="hasNode(nav)">
-                        <li v-for="child in nav.node"><a href="index2.html"><i
-                                :class="child.icon ? child.icon : 'fa fa-circle-o'"></i> {{ child.display_name }}</a>
+                        <li v-for="child in nav.node">
+                            <router-link :to="{path:child.path}">
+                                <i :class="child.icon ? child.icon : 'fa fa-circle-o'"></i> {{ child.display_name }}
+                            </router-link>
                         </li>
                     </ul>
                 </li>

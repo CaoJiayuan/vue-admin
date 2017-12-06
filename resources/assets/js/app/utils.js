@@ -3,6 +3,7 @@ import * as Chance from "chance";
 
 let toastr = require('toastr');
 let timer = null;
+let flattened = [];
 
 export function throttle(callback, threshold) {
     clearTimeout(timer);
@@ -144,4 +145,22 @@ export function htmlencode(s) {
     let div = document.createElement('div');
     div.appendChild(document.createTextNode(s));
     return div.innerHTML;
+}
+export function flattenNode(input, nodeKey) {
+    nodeKey = nodeKey || 'node';
+
+    let $clone = _.clone(input);
+
+    $clone.forEach(item => {
+        if (item.hasOwnProperty(nodeKey)) {
+            let nodes = item[nodeKey];
+            delete item[nodeKey];
+            flattened.push(item);
+            flattened.concat(flattenNode(nodes, nodeKey));
+        } else {
+            flattened.push(item);
+        }
+    });
+
+    return flattened;
 }
