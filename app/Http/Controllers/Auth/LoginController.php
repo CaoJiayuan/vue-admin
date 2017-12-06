@@ -71,7 +71,6 @@ class LoginController extends Controller
 
   public function getTTl()
   {
-    return 8;
     $guard = \Auth::guard('jwt');
 
     return $guard->factory()->getTTL() * 60;
